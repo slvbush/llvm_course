@@ -7,7 +7,7 @@
 #include <math.h>
 #include <memory.h>
 
-#define FRAME_TICKS 30
+#define FRAME_TICKS 120
 
 static SDL_Renderer *Renderer = NULL;
 static SDL_Window *Window = NULL;
@@ -44,7 +44,7 @@ void simFlush() {
   SDL_RenderPresent(Renderer);
 }
 
-void simPutPixel(int x, int y, uint32_t argb) {
+void simPutPixel(int x, int y, unsigned argb) {
   assert(0 <= x && x < SIM_X_SIZE && "Out of range");
   assert(0 <= y && y < SIM_Y_SIZE && "Out of range");
   Uint8 a = argb >> 24;
@@ -70,15 +70,15 @@ float simFloatMod(float divident, float divisor) {
   return fmodf(divident, divisor);
 }
 
-void simFloatMemset(float* ptr, int32_t val, int32_t cnt) {
+void simFloatMemset(float* ptr, int val, int cnt) {
   memset(ptr, val, cnt);
 }
 
-void simIntMemset(uint32_t* ptr, int32_t val, int32_t cnt) {
+void simIntMemset(unsigned* ptr, int val, int cnt) {
   memset(ptr, val, cnt);
 }
 
-void simMemcpy(float* dst, const float* src, int32_t cnt) {
+void simMemcpy(float* dst, const float* src, int cnt) {
   memcpy(dst, src, (size_t)cnt);
 }
 
