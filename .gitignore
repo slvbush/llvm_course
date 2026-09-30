@@ -1,0 +1,5 @@
+/hw1/app
+/hw1/myapp
+*.o
+*.out
+*.dSYM/
