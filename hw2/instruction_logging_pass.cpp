@@ -3,6 +3,7 @@
 #include "llvm/IR/Verifier.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
+#include <llvm-18/llvm/ADT/DenseMap.h>
 #include <llvm/IR/Instruction.h>
 #include <llvm/IR/PassManager.h>
 
@@ -10,8 +11,11 @@ using namespace llvm;
 
 struct MyModPass : public PassInfoMixin<MyModPass> {
   // what are those types?
+  // special compiler type aliases
   Type *voidType;
   Type *int8PtrTy;
+  DenseMap<unsigned, Value *> instructionsToGlobalNames =
+      DenseMap<unsigned, Value *>();
 
   bool insertInstructionsLog(Module &M, Function &F, IRBuilder<> &builder) {
     // Prepare instrLogger function: User, Operand
@@ -20,7 +24,7 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
         FunctionType::get(voidType, callParamTypes, false);
 
     /*
-    what does this method do?
+    what does this function do?
 
     check with "gd".. tldr: adds a prototype for the function and returns it
     (in our case because there is no decl for logger around)
@@ -31,28 +35,39 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
     bool Inserted = false;
     for (auto &B : F) {
       for (auto &I : B) {
-        // what are another interfaces available for instructions checking?
-        // i have no clue..
+        // if the user is PHI - we skip
         if (I.getOpcode() == Instruction::PHI) {
           continue;
         }
 
-        // Insert before operand call -- wrong
-        // why SetInsertPoint is needed?
+        // maybe we should not do it like that, because at this point
+        // there is no guarantee we are actually going to insert our logging
+        // call
         builder.SetInsertPoint(&I);
 
-        // why creating a global string is needed?
-        Value *instName = builder.CreateGlobalStringPtr(I.getOpcodeName());
-        for (auto *U : I.users()) {
-          if (auto *UserInst = dyn_cast<Instruction>(U)) {
-            if (UserInst->getOpcode() == Instruction::PHI) {
-              continue;
+        if (instructionsToGlobalNames.find(I.getOpcode()) ==
+            instructionsToGlobalNames.end()) {
+          instructionsToGlobalNames[I.getOpcode()] =
+              builder.CreateGlobalStringPtr(I.getOpcodeName());
+        }
+
+        // Value *instName = builder.CreateGlobalStringPtr(I.getOpcodeName());
+        Value *instName = instructionsToGlobalNames[I.getOpcode()];
+
+        for (const auto &operand : I.operands()) {
+          if (auto operandInstruction = dyn_cast<Instruction>(operand)) {
+            if (instructionsToGlobalNames.find(
+                    operandInstruction->getOpcode()) ==
+                instructionsToGlobalNames.end()) {
+              instructionsToGlobalNames[operandInstruction->getOpcode()] =
+                  builder.CreateGlobalStringPtr(
+                      operandInstruction->getOpcodeName());
             }
 
-            Value *userName =
-                builder.CreateGlobalStringPtr(UserInst->getOpcodeName());
-            Value *args[] = {userName, instName};
-            // what is create call and how does it work?
+            Value *operandInstName =
+                instructionsToGlobalNames[operandInstruction->getOpcode()];
+            Value *args[] = {instName, operandInstName};
+            // create an actual call on the current insert point
             builder.CreateCall(callLogFunc, args);
             Inserted = true;
           }
@@ -64,10 +79,10 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
 
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
     bool changed = false;
-    // how to check better? maybe somehow get a path for a valid module? or
-    // validate with function names? (namespaces required)
+
+    // bad check but whatever
     if (M.getName() == "../hw1/app.c") {
-      // what are those 4 lines of code?
+      // create necessary attributes
       LLVMContext &Ctx = M.getContext();
       IRBuilder<> builder(Ctx);
       voidType = Type::getVoidTy(Ctx);
@@ -83,14 +98,17 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
         }
       }
     }
+
     // what other options are there?
-    return changed ? PreservedAnalyses::none() : PreservedAnalyses::all();
+    // go check with "gd" - there are a lot
+    return PreservedAnalyses::none();
   };
 };
 
 PassPluginLibraryInfo getPassPluginInfo() {
   const auto callback = [](PassBuilder &PB) {
     // does it mean we will execute our pass after the optimizations happen?
+    // yes, contract can be checked with "gd"
     PB.registerOptimizerLastEPCallback([](ModulePassManager &MPM, auto) {
       MPM.addPass(MyModPass{});
       return true;
