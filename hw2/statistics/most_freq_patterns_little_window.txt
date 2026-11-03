@@ -1,0 +1,63 @@
+этот топ получен ручками: был произведен запуск инструментированного приложения с размером окна 4 и отобран последний дамп из файла stats.txt
+
+=== Top 10 patterns after 550000000 events ===
+
+#1 | Count: 19491467
+  'sext' <- 'add'
+  'getelementptr' <- 'sext'
+  'load' <- 'getelementptr'
+  'fsub' <- 'load'
+
+#2 | Count: 19491467
+  'getelementptr' <- 'sext'
+  'load' <- 'getelementptr'
+  'fsub' <- 'load'
+  'call' <- 'fsub'
+
+#3 | Count: 14618761
+  'load' <- 'getelementptr'
+  'fsub' <- 'load'
+  'call' <- 'fsub'
+  'fadd' <- 'phi'
+
+#4 | Count: 14618761
+  'fsub' <- 'load'
+  'call' <- 'fsub'
+  'fadd' <- 'phi'
+  'fadd' <- 'call'
+
+#5 | Count: 9759354
+  'fptoui' <- 'fmul'
+  'shl' <- 'fptoui'
+  'fmul' <- 'fmul'
+  'fptoui' <- 'fmul'
+
+#6 | Count: 9759354
+  'fmul' <- 'fmul'
+  'fptoui' <- 'fmul'
+  'shl' <- 'fptoui'
+  'fmul' <- 'fmul'
+
+#7 | Count: 9759354
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+
+#8 | Count: 9759354
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+
+#9 | Count: 9759354
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+
+#10 | Count: 9759354
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'

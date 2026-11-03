@@ -1,0 +1,113 @@
+этот топ получен ручками: был произведен запуск инструментированного приложения с размером окна 9 и отобран последний дамп из файла stats.txt
+
+=== Top 10 patterns after 390000000 events ===
+
+#1 | Count: 6845300
+  'sext' <- 'add'
+  'getelementptr' <- 'sext'
+  'load' <- 'getelementptr'
+  'fsub' <- 'load'
+  'call' <- 'fsub'
+  'fadd' <- 'phi'
+  'fadd' <- 'call'
+  'br' <- 'icmp'
+  'add' <- 'phi'
+
+#2 | Count: 3430000
+  'call' <- 'call'
+  'fcmp' <- 'call'
+  'fadd' <- 'call'
+  'select' <- 'fcmp'
+  'select' <- 'fadd'
+  'select' <- 'call'
+  'getelementptr' <- 'add'
+  'store' <- 'select'
+  'store' <- 'getelementptr'
+
+#3 | Count: 3430000
+  'fadd' <- 'load'
+  'fadd' <- 'call'
+  'call' <- 'fadd'
+  'call' <- 'load'
+  'call' <- 'call'
+  'fcmp' <- 'call'
+  'fadd' <- 'call'
+  'select' <- 'fcmp'
+  'select' <- 'fadd'
+
+#4 | Count: 3430000
+  'call' <- 'fadd'
+  'call' <- 'load'
+  'call' <- 'call'
+  'fcmp' <- 'call'
+  'fadd' <- 'call'
+  'select' <- 'fcmp'
+  'select' <- 'fadd'
+  'select' <- 'call'
+  'getelementptr' <- 'add'
+
+#5 | Count: 3430000
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+
+#6 | Count: 3430000
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+
+#7 | Count: 3430000
+  'sitofp' <- 'phi'
+  'fdiv' <- 'sitofp'
+  'fmul' <- 'phi'
+  'fmul' <- 'fdiv'
+  'ret' <- 'fmul'
+  'fadd' <- 'load'
+  'fadd' <- 'call'
+  'call' <- 'fadd'
+  'call' <- 'load'
+
+#8 | Count: 3430000
+  'fadd' <- 'call'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+  'call' <- 'fadd'
+  'fadd' <- 'call'
+  'fmul' <- 'fadd'
+  'fadd' <- 'fadd'
+
+#9 | Count: 3430000
+  'fadd' <- 'call'
+  'call' <- 'fadd'
+  'call' <- 'load'
+  'call' <- 'call'
+  'fcmp' <- 'call'
+  'fadd' <- 'call'
+  'select' <- 'fcmp'
+  'select' <- 'fadd'
+  'select' <- 'call'
+
+#10 | Count: 3430000
+  'or' <- 'fptoui'
+  'or' <- 'or'
+  'getelementptr' <- 'add'
+  'store' <- 'or'
+  'store' <- 'getelementptr'
+  'add' <- 'phi'
+  'icmp' <- 'add'
+  'br' <- 'icmp'
+  'add' <- 'phi'
