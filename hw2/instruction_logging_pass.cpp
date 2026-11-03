@@ -15,7 +15,7 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
   DenseMap<unsigned, Value *> instructionsToGlobalNames =
       DenseMap<unsigned, Value *>();
 
-  bool insertInstructionsLog(Module &M, Function &F, IRBuilder<> &builder) {
+  void insertInstructionsLog(Module &M, Function &F, IRBuilder<> &builder) {
     ArrayRef<Type *> callParamTypes = {int8PtrTy, int8PtrTy};
     FunctionType *instrLogFuncType =
         FunctionType::get(voidType, callParamTypes, false);
@@ -23,7 +23,6 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
     FunctionCallee callLogFunc =
         M.getOrInsertFunction("instrLogger", instrLogFuncType);
 
-    bool Inserted = false;
     for (auto &B : F) {
       for (auto &I : B) {
         if (I.getOpcode() == Instruction::PHI) {
@@ -55,17 +54,13 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
             Value *args[] = {instName, operandInstName};
 
             builder.CreateCall(callLogFunc, args);
-            Inserted = true;
           }
         }
       }
     }
-    return Inserted;
   }
 
   PreservedAnalyses run(Module &M, ModuleAnalysisManager &AM) {
-    bool changed = false;
-
     if (M.getName() == "../hw1/app.c") {
       LLVMContext &Ctx = M.getContext();
       IRBuilder<> builder(Ctx);
@@ -77,9 +72,7 @@ struct MyModPass : public PassInfoMixin<MyModPass> {
           continue;
         }
 
-        if (insertInstructionsLog(M, F, builder)) {
-          changed = true;
-        }
+        insertInstructionsLog(M, F, builder);
       }
     }
 
